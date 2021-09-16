@@ -25,6 +25,7 @@
     "lib:build:watch": "yarn run lib:build:prod:view-engine --watch",
     "lib:test:watch": "yarn run ng test --project ngx-sub-form",
     "lib:test:ci": "yarn run ng test --project ngx-sub-form --watch false --browsers=ChromeHeadless",
+    "lib:publish": "npm publish ./dist/ngx-sub-form --access public",
     "------------------ Quick Commands ------------------": "",
     "lint:fix": "yarn demo:lint:fix && yarn prettier:write",
     "semantic-release": "semantic-release",
