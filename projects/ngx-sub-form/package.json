@@ -1,15 +1,15 @@
 {
-  "name": "ngx-sub-form",
-  "version": "0.0.1",
+  "name": "@toolstik/ngx-sub-form",
+  "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
+    "fast-deep-equal": "^3.0.1",
+    "ngx-observable-lifecycle": "^2.1.4",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "fast-deep-equal": "^3.0.1",
-    "@angular/common": "^10.0.0",
-    "@angular/core": "^10.0.0",
-    "ngx-observable-lifecycle": "^2.1.4"
+    "@angular/common": ">=10.0.0",
+    "@angular/core": ">=10.0.0"
   },
   "keywords": [
     "Angular",
@@ -19,8 +19,9 @@
     "Reactive",
     "ControlValueAccessor"
   ],
+  "description": "A toolset to build strongly-typed hierarchical Angular reactive forms",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cloudnc/ngx-sub-form.git"
+    "url": "https://github.com/toolstik/ngx-sub-form.git"
   }
 }
