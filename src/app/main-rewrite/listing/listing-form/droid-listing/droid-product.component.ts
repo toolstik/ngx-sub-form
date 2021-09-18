@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { createForm, FormType, subformComponentProviders } from 'ngx-sub-form';
+import { createForm, createFormControl, FormType, subformComponentProviders } from 'ngx-sub-form';
 import {
   AssassinDroid,
   AstromechDroid,
@@ -32,11 +32,11 @@ export class DroidProductComponent {
   public form = createForm<OneDroid, OneDroidForm>(this, {
     formType: FormType.SUB,
     formControls: {
-      protocolDroid: new FormControl(null),
-      medicalDroid: new FormControl(null),
-      astromechDroid: new FormControl(null),
-      assassinDroid: new FormControl(null),
-      droidType: new FormControl(null, { validators: [Validators.required] }),
+      protocolDroid: createFormControl(),
+      medicalDroid: createFormControl(),
+      astromechDroid: createFormControl(),
+      assassinDroid: createFormControl(),
+      droidType: createFormControl(null, { validators: [Validators.required] }),
     },
     toFormGroup: (obj: OneDroid): OneDroidForm => {
       return {

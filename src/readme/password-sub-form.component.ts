@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { FormGroupOptions, NgxSubFormComponent, subformComponentProviders } from 'ngx-sub-form';
+import { NgxSubFormComponent, subformComponentProviders, TypedAbstractControlOptions } from 'ngx-sub-form';
 
 interface PasswordForm {
   password: string;
@@ -21,7 +21,7 @@ class PasswordSubFormComponent extends NgxSubFormComponent<PasswordForm> {
     };
   }
 
-  public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+  public getFormGroupControlOptions(): TypedAbstractControlOptions<PasswordForm> {
     return {
       validators: [
         formGroup => {

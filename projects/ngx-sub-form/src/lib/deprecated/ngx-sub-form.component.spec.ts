@@ -9,7 +9,7 @@ import {
   MissingFormControlsError,
   NGX_SUB_FORM_HANDLE_VALUE_CHANGES_RATE_STRATEGIES,
 } from '../shared/ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls } from '../shared/ngx-sub-form.types';
+import { NgxFormWithArrayControls, TypedAbstractControlOptions } from '../shared/ngx-sub-form.types';
 import { NgxSubFormComponent, NgxSubFormRemapComponent } from './ngx-sub-form.component';
 import { Component, Directive } from '@angular/core';
 
@@ -462,7 +462,7 @@ describe(`NgxSubFormComponent`, () => {
         };
       }
 
-      public getFormGroupControlOptions(): FormGroupOptions<Numbered> {
+      public getFormGroupControlOptions(): TypedAbstractControlOptions<Numbered> {
         return {
           validators: [
             formGroup => {
@@ -495,7 +495,7 @@ describe(`NgxSubFormComponent`, () => {
         };
       }
 
-      public getFormGroupControlOptions(): FormGroupOptions<PasswordForm> {
+      public getFormGroupControlOptions(): TypedAbstractControlOptions<PasswordForm> {
         return {
           validators: [
             formGroup => {
