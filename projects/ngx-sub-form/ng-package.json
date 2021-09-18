@@ -5,6 +5,7 @@
     "entryFile": "src/public_api.ts"
   },
   "whitelistedNonPeerDependencies": [
-    "fast-deep-equal"
+    "fast-deep-equal",
+    "ngx-observable-lifecycle"
   ]
 }

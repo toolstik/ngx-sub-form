@@ -7,7 +7,6 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
-import { Nilable } from 'tsdef';
 import {
   ArrayPropertyKey,
   ControlsNames,
@@ -21,6 +20,8 @@ import {
   NgxSubFormArrayOptions,
   NgxSubFormOptions,
 } from './ngx-sub-form.types';
+
+export type Nilable<T> = T | null | undefined;
 
 export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
