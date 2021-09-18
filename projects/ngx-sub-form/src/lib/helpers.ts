@@ -10,6 +10,7 @@ import { ReplaySubject } from 'rxjs';
 import {
   ArrayPropertyKey,
   ControlsNames,
+  ControlsType,
   NewFormErrors,
   OneOfControlsTypes,
   TypedFormGroup,
@@ -123,13 +124,15 @@ interface FormArrayWrapper<FormInterface> {
   control: FormArray;
 }
 
-export function createFormDataFromOptions<ControlInterface, FormInterface>(
-  options: NgxSubFormOptions<ControlInterface, FormInterface>,
-) {
-  const formGroup: TypedFormGroup<FormInterface> = new FormGroup(
+export function createFormDataFromOptions<
+  ControlInterface,
+  FormInterface,
+  FormControlsType extends ControlsType<FormInterface>
+>(options: NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType>) {
+  const formGroup: TypedFormGroup<FormInterface, FormControlsType> = new FormGroup(
     options.formControls,
     options.formGroupOptions as AbstractControlOptions,
-  ) as TypedFormGroup<FormInterface>;
+  ) as TypedFormGroup<FormInterface, FormControlsType>;
   const defaultValues: FormInterface = deepCopy(formGroup.value);
   const formGroupKeys: (keyof FormInterface)[] = Object.keys(defaultValues) as (keyof FormInterface)[];
   const formControlNames: ControlsNames<FormInterface> = formGroupKeys.reduce<ControlsNames<FormInterface>>(

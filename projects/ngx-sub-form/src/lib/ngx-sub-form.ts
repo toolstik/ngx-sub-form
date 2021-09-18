@@ -2,14 +2,10 @@ import { ɵmarkDirty as markDirty } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 import { getObservableLifecycle } from 'ngx-observable-lifecycle';
-import { combineLatest, concat, defer, EMPTY, forkJoin, identity, merge, Observable, of, timer } from 'rxjs';
+import { combineLatest, concat, EMPTY, identity, merge, Observable, of, timer } from 'rxjs';
 import {
-  catchError,
   delay,
-  exhaustMap,
   filter,
-  finalize,
-  ignoreElements,
   map,
   mapTo,
   shareReplay,
@@ -39,12 +35,17 @@ import {
   NgxSubFormArrayOptions,
   NgxSubFormOptions,
 } from './ngx-sub-form.types';
-import { isNullOrUndefined } from './shared/ngx-sub-form-utils';
+import { ControlsType, isNullOrUndefined } from './shared/ngx-sub-form-utils';
 
-const optionsHaveInstructionsToCreateArrays = <ControlInterface, FormInterface>(
-  options: NgxFormOptions<ControlInterface, FormInterface> & Partial<NgxSubFormArrayOptions<FormInterface>>,
-): options is NgxSubFormOptions<ControlInterface, FormInterface> & NgxSubFormArrayOptions<FormInterface> =>
-  !!options.createFormArrayControl;
+const optionsHaveInstructionsToCreateArrays = <
+  ControlInterface,
+  FormInterface,
+  FormControlsType extends ControlsType<FormInterface>
+>(
+  options: NgxFormOptions<ControlInterface, FormInterface, FormControlsType> &
+    Partial<NgxSubFormArrayOptions<FormInterface>>,
+): options is NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType> &
+  NgxSubFormArrayOptions<FormInterface> => !!options.createFormArrayControl;
 
 // @todo find a better name
 const isRoot = <ControlInterface, FormInterface>(
@@ -54,21 +55,34 @@ const isRoot = <ControlInterface, FormInterface>(
   return opt.formType === FormType.ROOT;
 };
 
-export function createForm<ControlInterface, FormInterface = ControlInterface>(
+export function createForm<
+  ControlInterface,
+  FormInterface = ControlInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+>(
   componentInstance: ControlValueAccessorComponentInstance,
-  options: NgxRootFormOptions<ControlInterface, FormInterface>,
-): NgxRootForm<ControlInterface, FormInterface>;
-export function createForm<ControlInterface, FormInterface = ControlInterface>(
+  options: NgxRootFormOptions<ControlInterface, FormInterface, FormControlsType>,
+): NgxRootForm<ControlInterface, FormInterface, FormControlsType>;
+export function createForm<
+  ControlInterface,
+  FormInterface = ControlInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+>(
   componentInstance: ControlValueAccessorComponentInstance,
-  options: NgxSubFormOptions<ControlInterface, FormInterface>,
-): NgxSubForm<ControlInterface, FormInterface>;
-export function createForm<ControlInterface, FormInterface>(
+  options: NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType>,
+): NgxSubForm<ControlInterface, FormInterface, FormControlsType>;
+export function createForm<
+  ControlInterface,
+  FormInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+>(
   componentInstance: ControlValueAccessorComponentInstance,
-  options: NgxFormOptions<ControlInterface, FormInterface>,
-): NgxSubForm<ControlInterface, FormInterface> {
+  options: NgxFormOptions<ControlInterface, FormInterface, FormControlsType>,
+): NgxSubForm<ControlInterface, FormInterface, FormControlsType> {
   const { formGroup, defaultValues, formControlNames, formArrays } = createFormDataFromOptions<
     ControlInterface,
-    FormInterface
+    FormInterface,
+    FormControlsType
   >(options);
 
   let isRemoved = false;
@@ -205,7 +219,8 @@ export function createForm<ControlInterface, FormInterface>(
       : EMPTY;
 
   const createFormArrayControl: Required<NgxSubFormArrayOptions<FormInterface>>['createFormArrayControl'] =
-    optionsHaveInstructionsToCreateArrays<ControlInterface, FormInterface>(options) && options.createFormArrayControl
+    optionsHaveInstructionsToCreateArrays<ControlInterface, FormInterface, FormControlsType>(options) &&
+    options.createFormArrayControl
       ? options.createFormArrayControl
       : (key, initialValue) => new FormControl(initialValue);
 
@@ -272,4 +287,25 @@ export function createForm<ControlInterface, FormInterface>(
     createFormArrayControl,
     controlValue$,
   };
+}
+
+class NgxFormBuilder<ControlInterface, FormInterface = ControlInterface> {
+  create<FormControlsType extends ControlsType<FormInterface>>(
+    componentInstance: ControlValueAccessorComponentInstance,
+    options: NgxRootFormOptions<ControlInterface, FormInterface, FormControlsType>,
+  ): NgxRootForm<ControlInterface, FormInterface, FormControlsType>;
+  create<FormControlsType extends ControlsType<FormInterface>>(
+    componentInstance: ControlValueAccessorComponentInstance,
+    options: NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType>,
+  ): NgxSubForm<ControlInterface, FormInterface, FormControlsType>;
+  create<FormControlsType extends ControlsType<FormInterface>>(
+    componentInstance: ControlValueAccessorComponentInstance,
+    options: NgxFormOptions<ControlInterface, FormInterface, FormControlsType>,
+  ): NgxSubForm<ControlInterface, FormInterface, FormControlsType> {
+    return createForm<ControlInterface, FormInterface, FormControlsType>(componentInstance, options);
+  }
+}
+
+export function formBuilder<ControlInterface, FormInterface = ControlInterface>() {
+  return new NgxFormBuilder<ControlInterface, FormInterface>();
 }

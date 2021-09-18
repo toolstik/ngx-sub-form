@@ -24,7 +24,7 @@ import {
   TypedAbstractControl,
   TypedFormGroup,
 } from '../shared/ngx-sub-form-utils';
-import { FormGroupOptions, NgxFormWithArrayControls, OnFormUpdate } from '../shared/ngx-sub-form.types';
+import { NgxFormWithArrayControls, OnFormUpdate, TypedAbstractControlOptions } from '../shared/ngx-sub-form.types';
 
 type MapControlFunction<FormInterface, MapValue> = (
   ctrl: TypedAbstractControl<any>,
@@ -189,7 +189,7 @@ export abstract class NgxSubFormComponent<ControlInterface, FormInterface = Cont
   /**
    * Extend this method to provide custom local FormGroup level validation
    */
-  protected getFormGroupControlOptions(): FormGroupOptions<FormInterface> {
+  protected getFormGroupControlOptions(): TypedAbstractControlOptions<FormInterface> {
     return {};
   }
 

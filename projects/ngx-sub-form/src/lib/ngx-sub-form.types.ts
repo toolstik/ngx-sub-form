@@ -4,12 +4,12 @@ import { Nilable } from './helpers';
 import {
   ArrayPropertyKey,
   ArrayPropertyValue,
-  Controls,
   ControlsNames,
+  ControlsType,
   NewFormErrors,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-import { FormGroupOptions } from './shared/ngx-sub-form.types';
+import { TypedAbstractControlOptions } from './shared/ngx-sub-form.types';
 
 export interface ComponentHooks {
   onDestroy: Observable<void>;
@@ -30,8 +30,12 @@ export type ControlValueAccessorComponentInstance = Object &
   // and this should *never* be overridden by the component
   Partial<Record<keyof ControlValueAccessor, never> & Record<keyof Validator, never>>;
 
-export interface NgxSubForm<ControlInterface, FormInterface> {
-  readonly formGroup: TypedFormGroup<FormInterface>;
+export interface NgxSubForm<
+  ControlInterface,
+  FormInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+> {
+  readonly formGroup: TypedFormGroup<FormInterface, FormControlsType>;
   readonly formControlNames: ControlsNames<FormInterface>;
   readonly formGroupErrors: NewFormErrors<FormInterface>;
   readonly createFormArrayControl: CreateFormArrayControlMethod<FormInterface>;
@@ -43,7 +47,11 @@ export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayProper
   initialValue: ArrayPropertyValue<FormInterface, K>,
 ) => FormControl;
 
-export interface NgxRootForm<ControlInterface, FormInterface> extends NgxSubForm<ControlInterface, FormInterface> {
+export interface NgxRootForm<
+  ControlInterface,
+  FormInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+> extends NgxSubForm<ControlInterface, FormInterface, FormControlsType> {
   // @todo: anything else needed here?
 }
 
@@ -69,10 +77,14 @@ type NgxSubFormArray<FormInterface> = ArrayPropertyKey<FormInterface> extends ne
   ? {} // no point defining `createFormArrayControl` if there's not a single array in the `FormInterface`
   : NgxSubFormArrayOptions<FormInterface>;
 
-export type NgxSubFormOptions<ControlInterface, FormInterface = ControlInterface> = {
+export type NgxSubFormOptions<
+  ControlInterface,
+  FormInterface = ControlInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+> = {
   formType: FormType;
-  formControls: Controls<FormInterface>;
-  formGroupOptions?: FormGroupOptions<FormInterface>;
+  formControls: FormControlsType;
+  formGroupOptions?: TypedAbstractControlOptions<FormInterface>;
   emitNullOnDestroy?: boolean;
   componentHooks?: ComponentHooks;
   // emit on this observable to mark the control as touched
@@ -80,10 +92,11 @@ export type NgxSubFormOptions<ControlInterface, FormInterface = ControlInterface
 } & NgxSubFormRemap<ControlInterface, FormInterface> &
   NgxSubFormArray<FormInterface>;
 
-export type NgxRootFormOptions<ControlInterface, FormInterface = ControlInterface> = NgxSubFormOptions<
+export type NgxRootFormOptions<
   ControlInterface,
-  FormInterface
-> & {
+  FormInterface = ControlInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+> = NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType> & {
   input$: Observable<ControlInterface | undefined>;
   output$: Subject<ControlInterface>;
   disabled$?: Observable<boolean>;
@@ -105,6 +118,10 @@ export enum FormType {
   ROOT = 'Root',
 }
 
-export type NgxFormOptions<ControlInterface, FormInterface> =
-  | NgxSubFormOptions<ControlInterface, FormInterface>
-  | NgxRootFormOptions<ControlInterface, FormInterface>;
+export type NgxFormOptions<
+  ControlInterface,
+  FormInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+> =
+  | NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType>
+  | NgxRootFormOptions<ControlInterface, FormInterface, FormControlsType>;

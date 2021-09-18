@@ -1,6 +1,7 @@
 import { InjectionToken, Type } from '@angular/core';
 import {
   AbstractControl,
+  AbstractControlOptions,
   ControlValueAccessor,
   FormArray,
   FormControl,
@@ -20,8 +21,12 @@ export type ControlsNames<T> = { [K in keyof T]-?: K };
 
 export type ControlMap<T, V> = { [K in keyof T]-?: V };
 
+export type ControlForType<T> =
+  | TypedFormControl<T>
+  | (T extends any[] ? TypedFormArray<T> : T extends object ? TypedFormGroup<T> : never);
+
 export type ControlsType<T> = {
-  [K in keyof T]-?: T[K] extends any[] ? TypedFormArray<T[K]> : TypedFormControl<T[K]> | TypedFormGroup<T[K]>;
+  [K in keyof T]-?: ControlForType<T[K]>;
 };
 
 export type OneOfControlsTypes<T = any> = ControlsType<T>[keyof ControlsType<T>];
@@ -67,10 +72,11 @@ export interface TypedAbstractControl<TValue> extends AbstractControl {
   patchValue(value: Partial<TValue>, options?: Parameters<AbstractControl['patchValue']>[1]): void;
 }
 
-export interface TypedFormGroup<TValue> extends FormGroup {
+export interface TypedFormGroup<TValue, FormControlsType extends ControlsType<TValue> = ControlsType<TValue>>
+  extends FormGroup {
   value: TValue;
   valueChanges: Observable<TValue>;
-  controls: ControlsType<TValue>;
+  controls: FormControlsType;
   setValue(value: TValue, options?: Parameters<FormGroup['setValue']>[1]): void;
   patchValue(value: Partial<TValue>, options?: Parameters<FormGroup['patchValue']>[1]): void;
   getRawValue(): TValue;
@@ -85,7 +91,7 @@ export interface TypedFormArray<TValue extends any[]> extends FormArray {
   getRawValue(): TValue;
 }
 
-export interface TypedFormControl<TValue> extends FormGroup {
+export interface TypedFormControl<TValue> extends FormControl {
   value: TValue;
   valueChanges: Observable<TValue>;
   setValue(value: TValue, options?: Parameters<FormControl['setValue']>[1]): void;
@@ -150,4 +156,19 @@ export function takeUntilDestroyed<T>(component: any): (source: Observable<T>) =
 /** @internal */
 export function isNullOrUndefined(obj: any): obj is null | undefined {
   return obj === null || obj === undefined;
+}
+
+export function createFormControl<T>(formState?: T, options?: AbstractControlOptions) {
+  return new FormControl(formState, options) as TypedFormControl<T>;
+}
+
+export function createFormGroup<T extends object, TControls extends ControlsType<T> = ControlsType<T>>(
+  formState: TControls,
+  options?: AbstractControlOptions,
+) {
+  return new FormGroup(formState, options) as TypedFormGroup<T, TControls>;
+}
+
+export function createFormArray<T extends any[]>(formState: ControlForType<T[0]>[], options?: AbstractControlOptions) {
+  return new FormArray(formState, options) as TypedFormArray<T>;
 }
