@@ -302,7 +302,10 @@ class NgxFormBuilder<ControlInterface, FormInterface = ControlInterface> {
     componentInstance: ControlValueAccessorComponentInstance,
     options: NgxFormOptions<ControlInterface, FormInterface, FormControlsType>,
   ): NgxSubForm<ControlInterface, FormInterface, FormControlsType> {
-    return createForm<ControlInterface, FormInterface, FormControlsType>(componentInstance, options);
+    return createForm<ControlInterface, FormInterface, FormControlsType>(
+      componentInstance,
+      options as NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType>,
+    );
   }
 }
 
