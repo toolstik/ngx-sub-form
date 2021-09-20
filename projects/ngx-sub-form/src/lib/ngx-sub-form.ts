@@ -286,6 +286,13 @@ export function createForm<
     },
     createFormArrayControl,
     controlValue$,
+    get value() {
+      const v = formGroup.value;
+      return options.fromFormGroup
+        ? options.fromFormGroup(v)
+        : // if it's not a remap component, the ControlInterface === the FormInterface
+          ((v as any) as ControlInterface);
+    },
   };
 }
 

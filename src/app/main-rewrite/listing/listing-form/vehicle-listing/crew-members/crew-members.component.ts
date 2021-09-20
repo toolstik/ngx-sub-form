@@ -1,12 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import {
-  createFormArray,
-  formBuilder,
-  FormType,
-  subformComponentProviders,
-  TypedFormControl,
-} from 'ngx-sub-form';
+import { createFormArray, formBuilder, FormType, subformComponentProviders, TypedFormControl } from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
 interface CrewMembersForm {

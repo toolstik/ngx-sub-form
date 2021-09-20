@@ -40,6 +40,7 @@ export interface NgxSubForm<
   readonly formGroupErrors: NewFormErrors<FormInterface>;
   readonly createFormArrayControl: CreateFormArrayControlMethod<FormInterface>;
   readonly controlValue$: Observable<Nilable<ControlInterface>>;
+  readonly value: ControlInterface;
 }
 
 export type CreateFormArrayControlMethod<FormInterface> = <K extends ArrayPropertyKey<FormInterface>>(
