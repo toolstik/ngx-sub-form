@@ -82,13 +82,17 @@ export interface TypedFormGroup<TValue, FormControlsType extends ControlsType<TV
   getRawValue(): TValue;
 }
 
-export interface TypedFormArray<TValue extends any[]> extends FormArray {
+export interface TypedFormArray<
+  TValue extends any[],
+  TControl extends ControlForType<TValue[0]> = ControlForType<TValue[0]>
+> extends FormArray {
   value: TValue;
   valueChanges: Observable<TValue>;
-  controls: TypedAbstractControl<TValue[0]>[];
+  controls: TControl[];
   setValue(value: TValue, options?: Parameters<FormArray['setValue']>[1]): void;
   patchValue(value: TValue, options?: Parameters<FormArray['patchValue']>[1]): void;
   getRawValue(): TValue;
+  push(control: TControl): void;
 }
 
 export interface TypedFormControl<TValue> extends FormControl {
@@ -169,6 +173,9 @@ export function createFormGroup<T extends object, TControls extends ControlsType
   return new FormGroup(formState, options) as TypedFormGroup<T, TControls>;
 }
 
-export function createFormArray<T extends any[]>(formState: ControlForType<T[0]>[], options?: AbstractControlOptions) {
-  return new FormArray(formState, options) as TypedFormArray<T>;
+export function createFormArray<T extends any[], TControl extends ControlForType<T[0]> = ControlForType<T[0]>>(
+  formState: TControl[],
+  options?: AbstractControlOptions,
+) {
+  return new FormArray(formState, options) as TypedFormArray<T, TControl>;
 }

@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormArray, FormControl, Validators } from '@angular/forms';
-import { createForm, createFormArray, formBuilder, FormType, subformComponentProviders } from 'ngx-sub-form';
+import { FormControl, Validators } from '@angular/forms';
+import {
+  createFormArray,
+  formBuilder,
+  FormType,
+  subformComponentProviders,
+  TypedFormControl,
+} from 'ngx-sub-form';
 import { CrewMember } from '../../../../../interfaces/crew-member.interface';
 
 interface CrewMembersForm {
@@ -18,7 +24,7 @@ export class CrewMembersComponent {
   public form = formBuilder<CrewMember[], CrewMembersForm>().create(this, {
     formType: FormType.SUB,
     formControls: {
-      crewMembers: createFormArray([]),
+      crewMembers: createFormArray([] as TypedFormControl<CrewMember>[]),
     },
     toFormGroup: (obj: CrewMember[]): CrewMembersForm => {
       return {
