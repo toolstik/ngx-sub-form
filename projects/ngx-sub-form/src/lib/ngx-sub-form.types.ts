@@ -77,12 +77,13 @@ type NgxSubFormArray<FormInterface> = ArrayPropertyKey<FormInterface> extends ne
   ? {} // no point defining `createFormArrayControl` if there's not a single array in the `FormInterface`
   : NgxSubFormArrayOptions<FormInterface>;
 
-export type NgxSubFormOptions<
+export type NgxAbstractFormOptions<
+  FType extends FormType,
   ControlInterface,
   FormInterface = ControlInterface,
   FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
 > = {
-  formType: FormType;
+  formType: FType;
   formControls: FormControlsType;
   formGroupOptions?: TypedAbstractControlOptions<FormInterface>;
   emitNullOnDestroy?: boolean;
@@ -92,11 +93,17 @@ export type NgxSubFormOptions<
 } & NgxSubFormRemap<ControlInterface, FormInterface> &
   NgxSubFormArray<FormInterface>;
 
+export type NgxSubFormOptions<
+  ControlInterface,
+  FormInterface = ControlInterface,
+  FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
+> = NgxAbstractFormOptions<FormType.SUB, ControlInterface, FormInterface, FormControlsType>;
+
 export type NgxRootFormOptions<
   ControlInterface,
   FormInterface = ControlInterface,
   FormControlsType extends ControlsType<FormInterface> = ControlsType<FormInterface>
-> = NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType> & {
+> = NgxAbstractFormOptions<FormType.ROOT, ControlInterface, FormInterface, FormControlsType> & {
   input$: Observable<ControlInterface | undefined>;
   output$: Subject<ControlInterface>;
   disabled$?: Observable<boolean>;

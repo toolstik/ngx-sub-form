@@ -18,6 +18,7 @@ import {
 import {
   ControlValueAccessorComponentInstance,
   FormBindings,
+  NgxFormOptions,
   NgxSubFormArrayOptions,
   NgxSubFormOptions,
 } from './ngx-sub-form.types';
@@ -128,7 +129,7 @@ export function createFormDataFromOptions<
   ControlInterface,
   FormInterface,
   FormControlsType extends ControlsType<FormInterface>
->(options: NgxSubFormOptions<ControlInterface, FormInterface, FormControlsType>) {
+>(options: NgxFormOptions<ControlInterface, FormInterface, FormControlsType>) {
   const formGroup: TypedFormGroup<FormInterface, FormControlsType> = new FormGroup(
     options.formControls,
     options.formGroupOptions as AbstractControlOptions,
