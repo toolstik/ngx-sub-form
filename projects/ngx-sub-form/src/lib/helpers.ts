@@ -1,12 +1,11 @@
-import {
-  AbstractControlOptions,
-  ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-} from '@angular/forms';
+import { AbstractControlOptions, ControlValueAccessor, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
+import {
+  ControlValueAccessorComponentInstance,
+  FormBindings,
+  NgxFormOptions,
+  NgxSubFormArrayOptions,
+} from './ngx-sub-form.types';
 import {
   ArrayPropertyKey,
   ControlsNames,
@@ -15,13 +14,6 @@ import {
   OneOfControlsTypes,
   TypedFormGroup,
 } from './shared/ngx-sub-form-utils';
-import {
-  ControlValueAccessorComponentInstance,
-  FormBindings,
-  NgxFormOptions,
-  NgxSubFormArrayOptions,
-  NgxSubFormOptions,
-} from './ngx-sub-form.types';
 
 export type Nilable<T> = T | null | undefined;
 
@@ -86,6 +78,12 @@ export const getFormGroupErrors = <ControlInterface, FormInterface>(
   const formErrors: NewFormErrors<ControlInterface> = Object.entries<OneOfControlsTypes>(formGroup.controls).reduce<
     Exclude<NewFormErrors<ControlInterface>, null>
   >((acc, [key, control]) => {
+    if (control.errors) {
+      // all of FormControl, FormArray and FormGroup can have errors so we assign them first
+      const accumulatedGenericError = acc as Record<keyof ControlInterface, ValidationErrors>;
+      accumulatedGenericError[key as keyof ControlInterface] = control.errors;
+    }
+
     if (control instanceof FormArray) {
       // errors within an array are represented as a map
       // with the index and the error
@@ -101,12 +99,12 @@ export const getFormGroupErrors = <ControlInterface, FormInterface>(
       }
 
       if (Object.values(errorsInArray).length > 0) {
-        const accHoldingArrays = acc as Record<keyof ControlInterface, Record<number, ValidationErrors>>;
-        accHoldingArrays[key as keyof ControlInterface] = errorsInArray;
+        const accumulatedArrayErrors = acc as Record<keyof ControlInterface, Record<number, ValidationErrors>>;
+        if (!(key in accumulatedArrayErrors)) {
+          accumulatedArrayErrors[key as keyof ControlInterface] = {};
       }
-    } else if (control.errors) {
-      const accHoldingNonArrays = acc as Record<keyof ControlInterface, ValidationErrors>;
-      accHoldingNonArrays[key as keyof ControlInterface] = control.errors;
+        Object.assign(accumulatedArrayErrors[key as keyof ControlInterface], errorsInArray);
+    }
     }
 
     return acc;

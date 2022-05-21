@@ -18,7 +18,9 @@ export class CrewMembersComponent {
   public form = formBuilder<CrewMember[], CrewMembersForm>().create(this, {
     formType: FormType.SUB,
     formControls: {
-      crewMembers: createFormArray([] as TypedFormControl<CrewMember>[]),
+      crewMembers: createFormArray([] as TypedFormControl<CrewMember>[], {
+        validators: formControl => (formControl.value.length >= 2 ? null : { minimumCrewMemberCount: 2 }),
+      }),
     },
     toFormGroup: (obj: CrewMember[]): CrewMembersForm => {
       return {

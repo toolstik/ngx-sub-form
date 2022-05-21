@@ -6,3 +6,4 @@
   },
   "whitelistedNonPeerDependencies": ["fast-deep-equal", "ngx-observable-lifecycle"]
 }
+}

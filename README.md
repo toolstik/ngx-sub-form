@@ -128,11 +128,11 @@ export class ListingComponent extends NgxAutomaticRootFormComponent<OneListing, 
   // another solution would be to ask you to use a setter and call a hook but
   // this is too verbose, that's why we created a decorator `@DataInput`
   @DataInput()
-  // tslint:disable-next-line:no-input-rename
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('listing')
   public dataInput: OneListing | null | undefined;
 
-  // tslint:disable-next-line:no-output-rename
+  // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('listingUpdated') public dataOutput: EventEmitter<OneListing> = new EventEmitter();
 
   // to access it from the view
@@ -409,7 +409,7 @@ If you have custom validations on the form controls, implement the `NgxFormWithA
 Example:
 
 ```ts
-// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L76
+// src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.ts#L13-L78
 
 interface CrewMembersForm {
   crewMembers: CrewMember[];
@@ -425,7 +425,9 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
   implements NgxFormWithArrayControls<CrewMembersForm> {
   protected getFormControls(): Controls<CrewMembersForm> {
     return {
-      crewMembers: new FormArray([]),
+      crewMembers: new FormArray([], {
+        validators: formControl => (formControl.value.length >= 2 ? null : { minimumCrewMemberCount: 2 }),
+      }),
     };
   }
 
@@ -479,10 +481,13 @@ export class CrewMembersComponent extends NgxSubFormRemapComponent<CrewMember[],
 Then our view will look like the following:
 
 ```html
-<!-- src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.html#L1-L26 -->
+<!-- src/app/main/listing/listing-form/vehicle-listing/crew-members/crew-members.component.html#L1-L28 -->
 
 <fieldset [formGroup]="formGroup" class="container">
-  <legend>Crew members form</legend>
+  <legend>
+    Crew members form
+    <small>(Minimum 2)</small>
+  </legend>
 
   <div
     class="crew-member"
