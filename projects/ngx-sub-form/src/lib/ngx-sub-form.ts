@@ -20,7 +20,7 @@ import {
   createFormDataFromOptions,
   getControlValueAccessorBindings,
   getFormGroupErrors,
-  handleFArray as handleFormArrays,
+  handleFormArrays,
   patchClassInstance,
 } from './helpers';
 import {

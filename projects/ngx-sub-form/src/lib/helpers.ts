@@ -19,12 +19,14 @@ export type Nilable<T> = T | null | undefined;
 
 export const deepCopy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
+/** @internal */
 export const patchClassInstance = (componentInstance: any, obj: Object) => {
   Object.entries(obj).forEach(([key, newMethod]) => {
     componentInstance[key] = newMethod;
   });
 };
 
+/** @internal */
 export const getControlValueAccessorBindings = <ControlInterface>(
   componentInstance: ControlValueAccessorComponentInstance,
 ): FormBindings<ControlInterface> => {
@@ -56,20 +58,6 @@ export const getControlValueAccessorBindings = <ControlInterface>(
     registerOnTouched$: registerOnTouched$$.asObservable(),
     setDisabledState$: setDisabledState$$.asObservable(),
   };
-};
-
-export const safelyPatchClassInstance = (componentInstance: any, obj: Object) => {
-  Object.entries(obj).forEach(([key, newMethod]) => {
-    const previousMethod = componentInstance[key];
-
-    componentInstance[key] = (...args: any[]) => {
-      if (previousMethod) {
-        previousMethod.apply(componentInstance);
-      }
-
-      newMethod(args);
-    };
-  });
 };
 
 export const getFormGroupErrors = <ControlInterface, FormInterface>(
@@ -155,7 +143,7 @@ export function createFormDataFromOptions<
   return { formGroup, defaultValues, formControlNames, formArrays };
 }
 
-export const handleFArray = <FormInterface>(
+export const handleFormArrays = <FormInterface>(
   formArrayWrappers: FormArrayWrapper<FormInterface>[],
   obj: FormInterface,
   createFormArrayControl: Required<NgxSubFormArrayOptions<FormInterface>>['createFormArrayControl'],
