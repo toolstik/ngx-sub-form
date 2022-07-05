@@ -13381,11 +13381,6 @@ tsconfig-paths@^3.4.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tsdef@0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/tsdef/-/tsdef-0.0.13.tgz#c71c2bd756c84887386ac8539ace63a38bc114e1"
-  integrity sha512-Twcdol23BQ+J+WD3NYhqusB7vvCDdK2bvcXnivgHu4xjrxnngUshgB+SWs2FN+I6BxY6BRkaE2KllO403GwbKA==
-
 tslib@2.3.1, tslib@^2.3.0, tslib@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"

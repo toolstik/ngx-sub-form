@@ -4,6 +4,5 @@
   "lib": {
     "entryFile": "src/public_api.ts"
   },
-  "whitelistedNonPeerDependencies": ["fast-deep-equal", "ngx-observable-lifecycle"]
-}
+  "allowedNonPeerDependencies": ["fast-deep-equal", "ngx-observable-lifecycle"]
 }
